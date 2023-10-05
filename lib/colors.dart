@@ -1,0 +1,4 @@
+import 'dart:ui';
+
+const int BACKGROUND_COLOR = 0xFF212121;
+const int TEXT_FIELD_BACKGROUND_COLOR = 0xFF343434;
