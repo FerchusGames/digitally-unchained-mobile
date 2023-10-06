@@ -1,12 +1,13 @@
+import 'package:digitally_unchained/collections/user_messages.dart';
 import 'package:digitally_unchained/screens/home.dart';
 import 'package:digitally_unchained/screens/register.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../collections/colors.dart';
-import '../collections/my_widgets.dart';
-import '../collections/text_styles.dart';
-import '../collections/my_functions.dart';
+import 'package:digitally_unchained/collections/colors.dart';
+import 'package:digitally_unchained/collections/my_widgets.dart';
+import 'package:digitally_unchained/collections/text_styles.dart';
+import 'package:digitally_unchained/collections/my_functions.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -26,10 +27,7 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        final FocusScopeNode focus = FocusScope.of(context);
-        if (!focus.hasPrimaryFocus && focus.hasFocus) {
-          FocusManager.instance.primaryFocus?.unfocus();
-        }
+        unfocusWidgets(context);
       },
       child: Scaffold(
         backgroundColor: Color(BACKGROUND_COLOR),
@@ -60,7 +58,7 @@ class _LoginState extends State<Login> {
                   ),
                   SizedBox(height: 10, width: double.infinity),
                   TextFieldValidationWarning(
-                      shouldShow: shouldShowEmailValidationText),
+                      shouldShow: shouldShowEmailValidationText, message: EMAIL_VALIDATION_WARNING_TEXT,),
                   SizedBox(
                     height: 10,
                     width: double.infinity,
@@ -84,9 +82,9 @@ class _LoginState extends State<Login> {
                         FocusScope.of(context).unfocus();
                         validateEmailPassword();
                       },
-                      child: const Text(
+                      child: Text(
                         'CONTINUE',
-                        style: TextStyle(fontSize: 16),
+                        style: buttonTextTextStyle,
                       ),
                     ),
                   ),

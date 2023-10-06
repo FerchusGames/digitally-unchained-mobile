@@ -16,3 +16,7 @@ var textButtonTextStyle = TextStyle(
   fontSize: 14,
   fontFamily: 'rbold',
 );
+
+var buttonTextTextStyle = TextStyle(
+    fontSize: 16
+);
