@@ -15,9 +15,7 @@ class TextFieldValidationWarning extends StatelessWidget {
     return Column(children: [
       Visibility(
           visible: shouldShow,
-          child: Column(
-            children: [
-              Text(
+          child: Text(
                 message,
                 style: TextStyle(
                   color: Colors.red,
@@ -25,12 +23,7 @@ class TextFieldValidationWarning extends StatelessWidget {
                   fontSize: 12,
                 ),
               ),
-              SizedBox(
-                height: 10,
-                width: double.infinity,
-              ),
-            ],
-          ))
+          )
     ]);
   }
 }

@@ -1,3 +1,4 @@
+import 'package:digitally_unchained/collections/pref_keys.dart';
 import 'package:digitally_unchained/collections/user_messages.dart';
 import 'package:digitally_unchained/screens/home.dart';
 import 'package:digitally_unchained/screens/register.dart';
@@ -8,6 +9,7 @@ import 'package:digitally_unchained/collections/colors.dart';
 import 'package:digitally_unchained/collections/my_widgets.dart';
 import 'package:digitally_unchained/collections/text_styles.dart';
 import 'package:digitally_unchained/collections/my_functions.dart';
+import 'package:digitally_unchained/collections/validators.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -20,11 +22,12 @@ class _LoginState extends State<Login> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  String? email, password;
   bool shouldShowEmailValidationText = false;
 
   @override
   Widget build(BuildContext context) {
+    double textFieldVerticalSpace = 32;
+
     return GestureDetector(
       onTap: () {
         unfocusWidgets(context);
@@ -53,14 +56,22 @@ class _LoginState extends State<Login> {
                     child: DarkTextField(
                       textController: emailController,
                       label: 'Email address',
-                      onTextChanged: validateEmailFormat,
+                      onTextChanged: checkAndSetEmailValidation,
                     ),
                   ),
-                  SizedBox(height: 10, width: double.infinity),
-                  TextFieldValidationWarning(
-                      shouldShow: shouldShowEmailValidationText, message: EMAIL_VALIDATION_WARNING_TEXT,),
                   SizedBox(
-                    height: 10,
+                      height: textFieldVerticalSpace / 4 * 1,
+                      width: double.infinity),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    alignment: Alignment.centerLeft,
+                    child: TextFieldValidationWarning(
+                      shouldShow: shouldShowEmailValidationText,
+                      message: EMAIL_VALIDATION_WARNING_TEXT,
+                    ),
+                  ),
+                  SizedBox(
+                    height: textFieldVerticalSpace / 4 * 3,
                     width: double.infinity,
                   ),
                   Container(
@@ -72,7 +83,7 @@ class _LoginState extends State<Login> {
                       hasObscureText: false,
                     ),
                   ),
-                  SizedBox(height: 32),
+                  SizedBox(height: textFieldVerticalSpace),
                   Container(
                     width: 1000,
                     height: 50,
@@ -80,7 +91,7 @@ class _LoginState extends State<Login> {
                     child: ElevatedButton(
                       onPressed: () {
                         FocusScope.of(context).unfocus();
-                        validateEmailPassword();
+                        validateFields();
                       },
                       child: Text(
                         'CONTINUE',
@@ -88,7 +99,8 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 32, width: double.infinity),
+                  SizedBox(
+                      height: textFieldVerticalSpace, width: double.infinity),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     alignment: Alignment.centerLeft,
@@ -123,26 +135,24 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Future<void> validateEmailPassword() async {
+  Future<void> validateFields() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String? correctEmail = await prefs.getString('email');
     String? correctPassword = await prefs.getString('password');
 
-    email = emailController.text;
-    password = passwordController.text;
-
-    print('Email: $email, Password: $password');
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
 
     if (email == '' || password == '') {
-      showAlert('You must fill all fields.', context);
+      showAlert(EMPTY_FIELD_WARNING_TEXT, context);
     } else if (email == correctEmail && password == correctPassword) {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (BuildContext context) {
         return Home();
       }), (route) => false);
     } else {
-      showAlert('Invalid email and password.', context);
+      showAlert(INVALID_PASSWORD_EMAIL_WARNING_TEXT, context);
     }
   }
 
@@ -153,14 +163,16 @@ class _LoginState extends State<Login> {
     super.dispose();
   }
 
-  Future<void> readData() async {
+  Future<void> checkPreviousLogin() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    email = await prefs.getString('email');
-    password = await prefs.getString('password');
+    bool? isLoggedIn = await prefs.getBool(IS_LOGGED_IN_KEY);
 
-    if (email != null && email != '') {
-      validateEmailPassword();
+    if(isLoggedIn ?? false){
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (BuildContext context) {
+            return Home();
+          }), (route) => false);
     }
   }
 
@@ -168,19 +180,13 @@ class _LoginState extends State<Login> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    readData();
+    checkPreviousLogin();
   }
 
-  void validateEmailFormat(String) {
-    if (!EmailValidator.validate(emailController.text) &&
-        emailController.text != '') {
-      setState(() {
-        shouldShowEmailValidationText = true;
-      });
-    } else {
-      setState(() {
-        shouldShowEmailValidationText = false;
-      });
-    }
+  void checkAndSetEmailValidation(email) {
+    bool isValid = validateEmailFormat(email);
+    setState(() {
+      shouldShowEmailValidationText = !isValid;
+    });
   }
 }
