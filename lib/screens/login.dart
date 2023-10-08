@@ -33,7 +33,7 @@ class _LoginState extends State<Login> {
         unfocusWidgets(context);
       },
       child: Scaffold(
-        backgroundColor: Color(BACKGROUND_COLOR),
+        backgroundColor: Color(BACKGROUND_MAIN_COLOR),
         body: ListView(
           children: [
             SafeArea(
@@ -48,7 +48,7 @@ class _LoginState extends State<Login> {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       'Login with your email',
-                      style: titleTextStyle,
+                      style: screenTitleTextStyle,
                     ),
                   ),
                   Container(

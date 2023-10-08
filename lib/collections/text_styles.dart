@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-var titleTextStyle = TextStyle(
+var screenTitleTextStyle = TextStyle(
   color: Colors.white,
   fontSize: 24,
 );
@@ -20,3 +20,9 @@ var textButtonTextStyle = TextStyle(
 var buttonTextTextStyle = TextStyle(
     fontSize: 16
 );
+
+var articleTitleTextStyle = TextStyle(
+  color: Colors.white,
+  fontSize: 14,
+);
+

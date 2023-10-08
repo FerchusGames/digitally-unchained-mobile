@@ -35,7 +35,7 @@ class _RegisterState extends State<Register> {
         unfocusWidgets(context);
       },
       child: Scaffold(
-        backgroundColor: Color(BACKGROUND_COLOR),
+        backgroundColor: Color(BACKGROUND_MAIN_COLOR),
         body: ListView(
           children: [
             SafeArea(
@@ -67,7 +67,7 @@ class _RegisterState extends State<Register> {
                       horizontal: textFieldHorizontalPadding),
                   child: Text(
                     'Create your account',
-                    style: titleTextStyle,
+                    style: screenTitleTextStyle,
                   ),
                 ),
                 SizedBox(
