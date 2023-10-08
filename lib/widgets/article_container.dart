@@ -34,7 +34,7 @@ class ArticleContainer extends StatelessWidget {
             height: 60,
             width: double.infinity,
             padding: EdgeInsets.all(20),
-            child: Text(title, style: articleTitleTextStyle,),
+            child: Text(title, style: TextStyles.articleTitle,),
           )
         ],
       ),

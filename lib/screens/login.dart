@@ -1,9 +1,8 @@
 import 'package:digitally_unchained/collections/pref_keys.dart';
-import 'package:digitally_unchained/collections/user_messages.dart';
+import 'package:digitally_unchained/collections/user_warning.dart';
 import 'package:digitally_unchained/screens/home.dart';
 import 'package:digitally_unchained/screens/register.dart';
 import 'package:flutter/material.dart';
-import 'package:email_validator/email_validator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:digitally_unchained/collections/colors.dart';
 import 'package:digitally_unchained/collections/my_widgets.dart';
@@ -30,7 +29,7 @@ class _LoginState extends State<Login> {
 
     return GestureDetector(
       onTap: () {
-        unfocusWidgets(context);
+        MyFunctions.unfocusWidgets(context);
       },
       child: Scaffold(
         backgroundColor: Color(BACKGROUND_MAIN_COLOR),
@@ -48,7 +47,7 @@ class _LoginState extends State<Login> {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       'Login with your email',
-                      style: screenTitleTextStyle,
+                      style: TextStyles.screenTitle,
                     ),
                   ),
                   Container(
@@ -67,7 +66,7 @@ class _LoginState extends State<Login> {
                     alignment: Alignment.centerLeft,
                     child: TextFieldValidationWarning(
                       shouldShow: shouldShowEmailValidationText,
-                      message: EMAIL_VALIDATION_WARNING_TEXT,
+                      message: UserWarnings.emailValidation,
                     ),
                   ),
                   SizedBox(
@@ -95,7 +94,7 @@ class _LoginState extends State<Login> {
                       },
                       child: Text(
                         'CONTINUE',
-                        style: buttonTextTextStyle,
+                        style: TextStyles.buttonText,
                       ),
                     ),
                   ),
@@ -106,23 +105,20 @@ class _LoginState extends State<Login> {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       "Don't have an account?",
-                      style: suggestionTextStyle,
+                      style: TextStyles.suggestion,
                     ),
                   ),
                   SizedBox(height: 12, width: double.infinity),
                   GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (BuildContext context) {
-                        return Register();
-                      }));
+                      Navigator.of(context).pushNamed('/register');
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 20),
                       alignment: Alignment.centerLeft,
                       child: Text(
                         'SIGN UP',
-                        style: textButtonTextStyle,
+                        style: TextStyles.textButton,
                       ),
                     ),
                   ),
@@ -145,14 +141,12 @@ class _LoginState extends State<Login> {
     String password = passwordController.text.trim();
 
     if (email == '' || password == '') {
-      showAlert(EMPTY_FIELD_WARNING_TEXT, context);
+      MyFunctions.showAlert(UserWarnings.emptyField, context);
     } else if (email == correctEmail && password == correctPassword) {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (BuildContext context) {
-        return Home();
-      }), (route) => false);
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
     } else {
-      showAlert(INVALID_PASSWORD_EMAIL_WARNING_TEXT, context);
+      MyFunctions.showAlert(UserWarnings.invalidPasswordEmail, context);
     }
   }
 
@@ -166,13 +160,11 @@ class _LoginState extends State<Login> {
   Future<void> checkPreviousLogin() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    bool? isLoggedIn = await prefs.getBool(IS_LOGGED_IN_KEY);
+    bool? isLoggedIn = await prefs.getBool(PrefKey.isLoggedIn);
 
-    if(isLoggedIn ?? false){
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (BuildContext context) {
-            return Home();
-          }), (route) => false);
+    if (isLoggedIn ?? false) {
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
     }
   }
 
@@ -184,7 +176,7 @@ class _LoginState extends State<Login> {
   }
 
   void checkAndSetEmailValidation(email) {
-    bool isValid = validateEmailFormat(email);
+    bool isValid = Validators.validateEmailFormat(email);
     setState(() {
       shouldShowEmailValidationText = !isValid;
     });

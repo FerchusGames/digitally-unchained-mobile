@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:digitally_unchained/collections/colors.dart';
-import 'package:digitally_unchained/collections/text_styles.dart';
 
 import '../widgets/article_container.dart';
 
@@ -36,12 +35,17 @@ class _HomeState extends State<Home> {
                       child: Image.asset('images/du_logo_dark.png'),
                     ),
                   ),
-                  Container(
-                    padding: EdgeInsets.all(20),
-                    height: 80,
-                    child: Icon(
-                      Icons.person,
-                      color: DARK_ICON_BACKGROUND_COLOR,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushNamed('/profile');
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(20),
+                      height: 80,
+                      child: Icon(
+                        Icons.person,
+                        color: DARK_ICON_BACKGROUND_COLOR,
+                      ),
                     ),
                   ),
                 ],

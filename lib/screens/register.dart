@@ -5,7 +5,7 @@ import 'package:digitally_unchained/collections/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:digitally_unchained/collections/validators.dart';
-import 'package:digitally_unchained/collections/user_messages.dart';
+import 'package:digitally_unchained/collections/user_warning.dart';
 import 'package:digitally_unchained/collections/pref_keys.dart';
 import 'package:digitally_unchained/screens/home.dart';
 
@@ -32,7 +32,7 @@ class _RegisterState extends State<Register> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        unfocusWidgets(context);
+        MyFunctions.unfocusWidgets(context);
       },
       child: Scaffold(
         backgroundColor: Color(BACKGROUND_MAIN_COLOR),
@@ -67,7 +67,7 @@ class _RegisterState extends State<Register> {
                       horizontal: textFieldHorizontalPadding),
                   child: Text(
                     'Create your account',
-                    style: screenTitleTextStyle,
+                    style: TextStyles.screenTitle,
                   ),
                 ),
                 SizedBox(
@@ -110,7 +110,7 @@ class _RegisterState extends State<Register> {
                     padding: EdgeInsets.symmetric(
                         horizontal: textFieldHorizontalPadding),
                     child: TextFieldValidationWarning(
-                        message: EMAIL_VALIDATION_WARNING_TEXT,
+                        message: UserWarnings.emailValidation,
                         shouldShow: shouldShowEmailValidationText)),
                 SizedBox(
                   height: textFieldVerticalSpace / 4 * 3,
@@ -120,7 +120,10 @@ class _RegisterState extends State<Register> {
                   padding: EdgeInsets.symmetric(
                       horizontal: textFieldHorizontalPadding),
                   child: DarkTextField(
-                      textController: passwordController, label: 'Password', hasObscureText: true,),
+                    textController: passwordController,
+                    label: 'Password',
+                    hasObscureText: true,
+                  ),
                 ),
                 SizedBox(
                   height: textFieldVerticalSpace,
@@ -149,7 +152,7 @@ class _RegisterState extends State<Register> {
                     },
                     child: Text(
                       'SIGN UP',
-                      style: buttonTextTextStyle,
+                      style: TextStyles.buttonText,
                     ),
                   ),
                 ),
@@ -160,7 +163,7 @@ class _RegisterState extends State<Register> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     "Already have an account?",
-                    style: suggestionTextStyle,
+                    style: TextStyles.suggestion,
                   ),
                 ),
                 SizedBox(height: 12, width: double.infinity),
@@ -173,7 +176,7 @@ class _RegisterState extends State<Register> {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       'LOG IN',
-                      style: textButtonTextStyle,
+                      style: TextStyles.textButton,
                     ),
                   ),
                 ),
@@ -186,8 +189,6 @@ class _RegisterState extends State<Register> {
   }
 
   Future<void> validateFields() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
     String firstName = firstNameController.text.trim();
     String lastName = lastNameController.text.trim();
     String email = emailController.text.trim();
@@ -203,22 +204,20 @@ class _RegisterState extends State<Register> {
     ];
 
     if (fields.any((field) => field.isEmpty)) {
-      showAlert(EMPTY_FIELD_WARNING_TEXT, context);
-    } else if (!validateEmailFormat(email)) {
-      showAlert(EMAIL_VALIDATION_WARNING_TEXT, context);
+      MyFunctions.showAlert(UserWarnings.emptyField, context);
+    } else if (!Validators.validateEmailFormat(email)) {
+      MyFunctions.showAlert(UserWarnings.emailValidation, context);
     } else if (password != passwordConfirmation) {
-      showAlert(PASSWORD_CONFIRMATION_WARNING_TEXT, context);
+      MyFunctions.showAlert(UserWarnings.passwordConfirmation, context);
     } else {
       saveData();
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (BuildContext context) {
-        return Home();
-      }), (route) => false);
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
     }
   }
 
   void checkAndSetEmailValidation(email) {
-    bool isValid = validateEmailFormat(email);
+    bool isValid = Validators.validateEmailFormat(email);
     setState(() {
       shouldShowEmailValidationText = !isValid;
     });
@@ -231,10 +230,10 @@ class _RegisterState extends State<Register> {
   Future<void> saveData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    await prefs.setString(FIRST_NAME_PREF_KEY, firstNameController.text);
-    await prefs.setString(LAST_NAME_PREF_KEY, lastNameController.text);
-    await prefs.setString(EMAIL_PREF_KEY, emailController.text);
-    await prefs.setString(PASSWORD_PREF_KEY, passwordController.text);
-    await prefs.setBool(IS_LOGGED_IN_KEY, true);
+    await prefs.setString(PrefKey.firstName, firstNameController.text);
+    await prefs.setString(PrefKey.lastName, lastNameController.text);
+    await prefs.setString(PrefKey.email, emailController.text);
+    await prefs.setString(PrefKey.password, passwordController.text);
+    await prefs.setBool(PrefKey.isLoggedIn, true);
   }
 }
