@@ -5,7 +5,7 @@ class DarkTextField extends StatelessWidget {
   const DarkTextField({
     super.key,
     required this.textController,
-    required this.label,
+    this.label,
     this.onTextChanged = _defaultOnTextChanged,
     this.hasAutocorrect = false,
     this.textInputActionType = TextInputAction.go,
@@ -47,7 +47,9 @@ class DarkTextField extends StatelessWidget {
         filled: true,
         fillColor: Color(MyColors.textFieldBackground),
         labelText: label,
-        labelStyle: TextStyle(color: Colors.grey[400]),
+        labelStyle: isEnabled
+            ? TextStyle(color: Colors.grey[400])
+            : TextStyle(color: Colors.grey[700]),
         counterText: '',
         contentPadding:
             EdgeInsets.only(left: 10, right: 10, bottom: 15, top: 10),

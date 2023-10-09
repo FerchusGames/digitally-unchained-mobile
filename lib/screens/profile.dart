@@ -5,6 +5,7 @@ import 'package:digitally_unchained/collections/my_colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:digitally_unchained/collections/pref_keys.dart';
 import 'package:digitally_unchained/collections/text_styles.dart';
+import 'package:digitally_unchained/collections/global_data.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -14,6 +15,7 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+
   double textFieldVerticalSpace = 40;
   double labelVerticalSpace = 8;
 
@@ -52,7 +54,7 @@ class _ProfileState extends State<Profile> {
                     Expanded(child: SizedBox()),
                     GestureDetector(
                       onTap: () {
-                        Logout(context);
+                        logout(context);
                       },
                       child: Icon(
                         Icons.logout,
@@ -72,7 +74,12 @@ class _ProfileState extends State<Profile> {
                   child: Container(
                     height: 160,
                     width: 160,
-                    child: Image.asset(
+                    child: GlobalData.profilePicture != null
+                        ? Image.file(
+                      GlobalData.profilePicture!,
+                      fit: BoxFit.cover,
+                    )
+                        : Image.asset(
                       'images/default_avatar.jpg',
                       fit: BoxFit.cover,
                     ),
@@ -178,20 +185,24 @@ class _ProfileState extends State<Profile> {
     updateProfileFromPrefs();
   }
 
-  Future<void> Logout(BuildContext context) async {
+  Future<void> logout(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
     await prefs.setBool(PrefKey.isLoggedIn, false);
     Navigator.of(context).pushNamed('/login');
   }
 
   Future<void> updateProfileFromPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    print('Updating profile from prefs');
+
+    String? newLastName = prefs.getString(PrefKey.lastName);
+    String? newFirstName = prefs.getString(PrefKey.firstName);
+    String? newEmail = prefs.getString(PrefKey.email);
 
     setState(() {
-      firstName = prefs.getString(PrefKey.firstName);
-      lastName = prefs.getString(PrefKey.lastName);
-      email = prefs.getString(PrefKey.email);
+      firstName = newFirstName;
+      lastName = newLastName;
+      email = newEmail;
     });
   }
 }

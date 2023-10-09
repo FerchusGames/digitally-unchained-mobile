@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:digitally_unchained/collections/my_colors.dart';
 
+import '../collections/global_data.dart';
 import '../widgets/article_container.dart';
 
 class Home extends StatefulWidget {
@@ -37,18 +38,29 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pushNamed('/profile');
+                    onTap: () async {
+                      await Navigator.of(context).pushNamed('/profile');
+                      refresh();
                     },
-                    child: Container(
-                      padding: EdgeInsets.all(20),
-                      height: 80,
-                      child: Icon(
-                        Icons.person,
-                        color: Color(MyColors.darkIconBackground),
+                    child: Center(
+                      child: ClipOval(
+                        child: Container(
+                          height: 40,
+                          width: 40,
+                          child: GlobalData.profilePicture != null
+                              ? Image.file(
+                            GlobalData.profilePicture!,
+                            fit: BoxFit.cover,
+                          )
+                              : Image.asset(
+                            'images/default_avatar.jpg',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
                     ),
                   ),
+                  SizedBox(width: 20,)
                 ],
               ),
             ),
@@ -84,5 +96,9 @@ class _HomeState extends State<Home> {
         ),
       ),
     );
+  }
+
+  void refresh() {
+    setState(() {});
   }
 }

@@ -79,7 +79,7 @@ class _LoginState extends State<Login> {
                     child: DarkTextField(
                       label: 'Password',
                       textController: passwordController,
-                      hasObscureText: false,
+                      hasObscureText: true,
                     ),
                   ),
                   SizedBox(height: textFieldVerticalSpace),
