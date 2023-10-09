@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../collections/colors.dart';
+import '../collections/my_colors.dart';
 import '../collections/text_styles.dart';
 
 class ArticleContainer extends StatelessWidget {
@@ -19,7 +19,9 @@ class ArticleContainer extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: [
-          ClipRRect(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+          ClipRRect(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20), topRight: Radius.circular(20)),
               child: Image.asset(
                 imagePath,
                 fit: BoxFit.cover,
@@ -28,13 +30,18 @@ class ArticleContainer extends StatelessWidget {
               )),
           Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
-              color: Color(BACKGROUND_ACCENT_COLOR),
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20)),
+              color: Color(MyColors.backgroundAccent),
             ),
             height: 60,
             width: double.infinity,
             padding: EdgeInsets.all(20),
-            child: Text(title, style: TextStyles.articleTitle,),
+            child: Text(
+              title,
+              style: TextStyles.articleTitle,
+            ),
           )
         ],
       ),

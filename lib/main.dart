@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => Login(),
         '/register': (context) => Register(),
         '/profile': (context) => Profile(),
+        '/edit_profile': (context) => EditProfile(),
       },
       title: 'Digitally Unchained',
       theme: ThemeData(

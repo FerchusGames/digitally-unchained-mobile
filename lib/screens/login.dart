@@ -4,7 +4,7 @@ import 'package:digitally_unchained/screens/home.dart';
 import 'package:digitally_unchained/screens/register.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:digitally_unchained/collections/colors.dart';
+import 'package:digitally_unchained/collections/my_colors.dart';
 import 'package:digitally_unchained/collections/my_widgets.dart';
 import 'package:digitally_unchained/collections/text_styles.dart';
 import 'package:digitally_unchained/collections/my_functions.dart';
@@ -32,11 +32,11 @@ class _LoginState extends State<Login> {
         MyFunctions.unfocusWidgets(context);
       },
       child: Scaffold(
-        backgroundColor: Color(BACKGROUND_MAIN_COLOR),
-        body: ListView(
-          children: [
-            SafeArea(
-              child: Column(
+        backgroundColor: Color(MyColors.backgroundMain),
+        body: SafeArea(
+          child: ListView(
+            children: [
+              Column(
                 children: [
                   Container(
                       margin: EdgeInsets.all(20),
@@ -84,7 +84,7 @@ class _LoginState extends State<Login> {
                   ),
                   SizedBox(height: textFieldVerticalSpace),
                   Container(
-                    width: 1000,
+                    width: double.infinity,
                     height: 50,
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: ElevatedButton(
@@ -124,8 +124,8 @@ class _LoginState extends State<Login> {
                   ),
                 ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -140,14 +140,25 @@ class _LoginState extends State<Login> {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
 
+    print('Correct Email: "$correctEmail"');
+    print('Correct Password: "$correctPassword"');
+
     if (email == '' || password == '') {
       MyFunctions.showAlert(UserWarnings.emptyField, context);
     } else if (email == correctEmail && password == correctPassword) {
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
+      Login();
     } else {
       MyFunctions.showAlert(UserWarnings.invalidPasswordEmail, context);
     }
+  }
+
+  Future<void> Login() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await prefs.setBool(PrefKey.isLoggedIn, true);
+
+    Navigator.of(context)
+        .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
   }
 
   @override

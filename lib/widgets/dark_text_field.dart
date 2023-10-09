@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../collections/colors.dart';
+import '../collections/my_colors.dart';
 
 class DarkTextField extends StatelessWidget {
   const DarkTextField({
@@ -11,10 +11,11 @@ class DarkTextField extends StatelessWidget {
     this.textInputActionType = TextInputAction.go,
     this.textCapitalizationType = TextCapitalization.none,
     this.hasObscureText = false,
+    this.isEnabled = true,
   });
 
   static void _defaultOnTextChanged(String value) {}
-  
+
   final Function(String) onTextChanged;
   final TextEditingController textController;
   final String? label;
@@ -22,12 +23,13 @@ class DarkTextField extends StatelessWidget {
   final textInputActionType;
   final textCapitalizationType;
   final hasObscureText;
+  final isEnabled;
 
   @override
   Widget build(BuildContext context) {
-
     return TextField(
       controller: textController,
+      enabled: isEnabled,
       autofocus: false,
       textInputAction: textInputActionType,
       autocorrect: hasAutocorrect,
@@ -43,11 +45,12 @@ class DarkTextField extends StatelessWidget {
       obscureText: hasObscureText,
       decoration: InputDecoration(
         filled: true,
-        fillColor: Color(TEXT_FIELD_BACKGROUND_COLOR),
+        fillColor: Color(MyColors.textFieldBackground),
         labelText: label,
         labelStyle: TextStyle(color: Colors.grey[400]),
         counterText: '',
-        contentPadding: EdgeInsets.only(left: 10, right: 10, bottom: 15, top: 10),
+        contentPadding:
+            EdgeInsets.only(left: 10, right: 10, bottom: 15, top: 10),
       ),
       onChanged: onTextChanged,
     );

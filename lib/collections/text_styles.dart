@@ -26,4 +26,9 @@ class TextStyles {
     color: Colors.white,
     fontSize: 14,
   );
+
+  static final TextStyle label = TextStyle(
+    color: Colors.white,
+    fontSize: 14,
+  );
 }

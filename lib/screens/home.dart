@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:digitally_unchained/collections/colors.dart';
+import 'package:digitally_unchained/collections/my_colors.dart';
 
 import '../widgets/article_container.dart';
 
@@ -16,15 +16,16 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(BACKGROUND_MAIN_COLOR),
+      backgroundColor: Color(MyColors.backgroundMain),
       body: SafeArea(
         child: ListView(
           children: [
             Container(
               decoration: BoxDecoration(
-                  color: Color(BACKGROUND_MAIN_COLOR),
+                  color: Color(MyColors.backgroundMain),
                   border: Border(
-                      bottom: BorderSide(color: DARK_ICON_BACKGROUND_COLOR))),
+                      bottom: BorderSide(
+                          color: Color(MyColors.darkIconBackground)))),
               child: Row(
                 children: [
                   Expanded(
@@ -44,7 +45,7 @@ class _HomeState extends State<Home> {
                       height: 80,
                       child: Icon(
                         Icons.person,
-                        color: DARK_ICON_BACKGROUND_COLOR,
+                        color: Color(MyColors.darkIconBackground),
                       ),
                     ),
                   ),
