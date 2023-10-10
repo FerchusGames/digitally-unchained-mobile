@@ -1,6 +1,6 @@
 # digitally_unchained
 
-Discover Modern Freedom.
+Digitally Unchained App.
 
 ## Getting Started
 

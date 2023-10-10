@@ -54,7 +54,7 @@ class _ProfileState extends State<Profile> {
                     Expanded(child: SizedBox()),
                     GestureDetector(
                       onTap: () {
-                        logout(context);
+                        MyFunctions.logout(context);
                       },
                       child: Icon(
                         Icons.logout,
@@ -95,10 +95,9 @@ class _ProfileState extends State<Profile> {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: ElevatedButton(
-                  onPressed: () async {
+                  onPressed: () {
                     FocusScope.of(context).unfocus();
-                    await Navigator.of(context).pushNamed('/edit_profile');
-                    updateProfileFromPrefs();
+                    Navigator.of(context).pushNamed('/edit_profile').then((value){updateProfileFromPrefs();});
                   },
                   child: Text(
                     'EDIT YOUR PROFILE',
@@ -183,12 +182,6 @@ class _ProfileState extends State<Profile> {
   void initState() {
     super.initState();
     updateProfileFromPrefs();
-  }
-
-  Future<void> logout(BuildContext context) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(PrefKey.isLoggedIn, false);
-    Navigator.of(context).pushNamed('/login');
   }
 
   Future<void> updateProfileFromPrefs() async {
