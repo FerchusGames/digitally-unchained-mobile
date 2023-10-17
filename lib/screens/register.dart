@@ -8,6 +8,8 @@ import 'package:digitally_unchained/collections/validators.dart';
 import 'package:digitally_unchained/collections/user_warning.dart';
 import 'package:digitally_unchained/collections/pref_keys.dart';
 import 'package:digitally_unchained/screens/home.dart';
+import 'package:http/http.dart' as http;
+import 'package:async/async.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -22,6 +24,12 @@ class _RegisterState extends State<Register> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final passwordConfirmationController = TextEditingController();
+
+  String firstName = '';
+  String lastName = '';
+  String email = '';
+  String password = '';
+  String passwordConfirmation = '';
 
   double textFieldVerticalSpace = 32;
   double textFieldHorizontalPadding = 24;
@@ -149,7 +157,8 @@ class _RegisterState extends State<Register> {
                     child: ElevatedButton(
                       onPressed: () {
                         FocusScope.of(context).unfocus();
-                        validateFields();
+                        setTextVariables();
+                        sendData();
                       },
                       child: Text(
                         'SIGN UP',
@@ -190,13 +199,15 @@ class _RegisterState extends State<Register> {
     );
   }
 
-  Future<void> validateFields() async {
-    String firstName = firstNameController.text.trim();
-    String lastName = lastNameController.text.trim();
-    String email = emailController.text.trim();
-    String password = passwordController.text.trim();
-    String passwordConfirmation = passwordConfirmationController.text.trim();
+  void setTextVariables() {
+    firstName = firstNameController.text.trim();
+    lastName = lastNameController.text.trim();
+    email = emailController.text.trim();
+    password = passwordController.text.trim();
+    passwordConfirmation = passwordConfirmationController.text.trim();
+  }
 
+  Future<void> validateFields() async {
     List<String> fields = [
       firstName,
       lastName,
@@ -216,6 +227,10 @@ class _RegisterState extends State<Register> {
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
     }
+  }
+
+  Future<void> sendData() async {
+
   }
 
   void checkAndSetEmailValidation(email) {
