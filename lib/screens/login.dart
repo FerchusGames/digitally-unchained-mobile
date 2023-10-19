@@ -1,7 +1,5 @@
 import 'package:digitally_unchained/collections/pref_keys.dart';
 import 'package:digitally_unchained/collections/user_warning.dart';
-import 'package:digitally_unchained/screens/home.dart';
-import 'package:digitally_unchained/screens/register.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:digitally_unchained/collections/my_colors.dart';
@@ -157,8 +155,7 @@ class _LoginState extends State<Login> {
 
     await prefs.setBool(PrefKey.isLoggedIn, true);
 
-    Navigator.of(context)
-        .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
+    Navigator.pushReplacementNamed(context, '/home');
   }
 
   @override
@@ -174,8 +171,7 @@ class _LoginState extends State<Login> {
     bool? isLoggedIn = await prefs.getBool(PrefKey.isLoggedIn);
 
     if (isLoggedIn ?? false) {
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
+      Navigator.pushReplacementNamed(context, '/home');
     }
   }
 

@@ -5,7 +5,13 @@ import '../collections/global_data.dart';
 import '../widgets/article_container.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+
+  String firstName = '';
+  String lastName = '';
+  String email = '';
+
+  Home({super.key});
+  Home.withData(this.firstName, this.lastName, this.email);
 
   @override
   State<Home> createState() => _HomeState();

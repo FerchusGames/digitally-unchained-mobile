@@ -1,15 +1,16 @@
 import 'package:digitally_unchained/collections/my_colors.dart';
 import 'package:digitally_unchained/collections/my_functions.dart';
 import 'package:digitally_unchained/collections/my_widgets.dart';
+import 'package:digitally_unchained/collections/screens.dart';
 import 'package:digitally_unchained/collections/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:digitally_unchained/collections/validators.dart';
 import 'package:digitally_unchained/collections/user_warning.dart';
 import 'package:digitally_unchained/collections/pref_keys.dart';
-import 'package:digitally_unchained/screens/home.dart';
 import 'package:http/http.dart' as http;
 import 'package:async/async.dart';
+import 'dart:convert';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -224,13 +225,46 @@ class _RegisterState extends State<Register> {
       MyFunctions.showAlert(UserWarnings.passwordConfirmation, context);
     } else {
       saveData();
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
+      Navigator.pushReplacementNamed(context, '/home');
     }
   }
 
   Future<void> sendData() async {
+    var url = Uri.parse('https://digitallyunchained.rociochavezml.com/php/register.php');
+    var response = await http.post(url, body: {
+      'firstName' : firstName,
+      'lastName' : lastName,
+      'email' : email,
+      'password' : password,
+    }).timeout(Duration(seconds: 90));
 
+    print(response.body);
+
+    var data = jsonDecode(response.body);
+
+    if(response.body != '0')
+    {
+      resetTextControllers();
+      Navigator.pushReplacementNamed(context, '/home');
+      Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context){
+        return Home.withData(data['firstName'], data['lastName'], data['email']);
+      }));
+    }
+    
+    else
+    {
+      MyFunctions.showAlert("There was an error, please report to the administrator", context);
+    }
+  }
+
+  void resetTextControllers() {
+    setState(() {
+      firstNameController.text = '';
+      lastNameController.text = '';
+      emailController.text = '';
+      passwordController.text = '';
+      passwordConfirmationController.text = '';
+    });
   }
 
   void checkAndSetEmailValidation(email) {
