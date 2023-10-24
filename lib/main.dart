@@ -18,13 +18,15 @@ class MyApp extends StatelessWidget {
         '/register': (context) => Register(),
         '/profile': (context) => Profile(),
         '/edit_profile': (context) => EditProfile(),
+        '/products': (context) => Products(),
+        '/product_create': (context) => Product_Create(),
       },
       title: 'Digitally Unchained',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
-      home: Login(),
+      home: Products(),
       debugShowCheckedModeBanner: false,
     );
   }
