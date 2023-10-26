@@ -13,6 +13,7 @@ class Product_Create extends StatefulWidget {
 }
 
 class _Product_CreateState extends State<Product_Create> {
+
   final nameTextController = TextEditingController();
   final priceTextController = TextEditingController();
   final descriptionTextController = TextEditingController();
