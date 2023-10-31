@@ -5,22 +5,41 @@ import 'package:flutter/material.dart';
 import '../collections/text_styles.dart';
 import 'package:http/http.dart' as http;
 
-class Product_Create extends StatefulWidget {
-  const Product_Create({super.key});
+class Product_Edit extends StatefulWidget {
+
+  String? id;
+  String? name = '';
+  String? price = '';
+  String? description = '';
+
+  Product_Edit(this.id, this.name, this.price, this.description) : super();
 
   @override
-  State<Product_Create> createState() => _Product_CreateState();
+  State<Product_Edit> createState() => _Product_EditState();
 }
 
-class _Product_CreateState extends State<Product_Create> {
+class _Product_EditState extends State<Product_Edit> {
+
+  String id = '';
+  String name = '';
+  String price = '';
+  String description = '';
 
   final nameTextController = TextEditingController();
   final priceTextController = TextEditingController();
   final descriptionTextController = TextEditingController();
 
-  String name = '';
-  String price = '';
-  String description = '';
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      nameTextController.text = widget.name!;
+      priceTextController.text = widget.price!;
+      descriptionTextController.text = widget.description!;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +49,7 @@ class _Product_CreateState extends State<Product_Create> {
         backgroundColor: Color(MyColors.backgroundMain),
         appBar: AppBar(
           backgroundColor: Color(MyColors.backgroundMain),
-          title: Text("Create a Product"),
+          title: Text("Edit a Product"),
           titleTextStyle: TextStyles.screenTitle,
           iconTheme: IconThemeData(
             color: Colors.white,
@@ -42,7 +61,7 @@ class _Product_CreateState extends State<Product_Create> {
             setTextVariables();
             sendData();
           },
-          child: Icon(Icons.add),
+          child: Icon(Icons.edit),
           backgroundColor: Colors.green,
           elevation: 0,
         ),
@@ -73,8 +92,9 @@ class _Product_CreateState extends State<Product_Create> {
   }
 
   Future<void> sendData() async {
-    var url = Uri.parse('https://digitallyunchained.rociochavezml.com/php/add_product.php');
+    var url = Uri.parse('https://digitallyunchained.rociochavezml.com/php/edit_product.php');
     var response = await http.post(url, body: {
+      'id' : widget.id,
       'name' : name,
       'price' : price,
       'description' : description,
