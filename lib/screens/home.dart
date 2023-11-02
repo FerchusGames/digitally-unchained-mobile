@@ -140,7 +140,7 @@ class _HomeState extends State<Home> {
                     return Column(
                       children: [
                         ArticleContainer(
-                          title: 'Blocking explicit websites with a DNS',
+                          title: data[index].name!,
                           imagePath: 'images/dns_cloudflare.jpg',
                         ),
                         SizedBox(
