@@ -7,7 +7,7 @@ class DarkTextField extends StatelessWidget {
     required this.textController,
     this.label,
     this.inputType = TextInputType.text,
-    this.horizontalPadding = 30,
+    this.horizontalPadding = 18,
     this.verticalPadding = 10,
     this.onTextChanged = _defaultOnTextChanged,
     this.hasAutocorrect = false,

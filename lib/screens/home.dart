@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:digitally_unchained/collections/my_colors.dart';
 
 import '../collections/global_data.dart';
+import '../collections/my_functions.dart';
+import '../collections/screens.dart';
 import '../widgets/article_container.dart';
 import 'package:digitally_unchained/collections/text_styles.dart';
 import 'package:digitally_unchained/product_data.dart';
@@ -103,13 +105,13 @@ class _HomeState extends State<Home> {
                             width: 40,
                             child: GlobalData.profilePicture != null
                                 ? Image.file(
-                              GlobalData.profilePicture!,
-                              fit: BoxFit.cover,
-                            )
+                                    GlobalData.profilePicture!,
+                                    fit: BoxFit.cover,
+                                  )
                                 : Image.asset(
-                              'images/default_avatar.jpg',
-                              fit: BoxFit.cover,
-                            ),
+                                    'images/default_avatar.jpg',
+                                    fit: BoxFit.cover,
+                                  ),
                           ),
                         ),
                       ),
@@ -133,15 +135,81 @@ class _HomeState extends State<Home> {
                 )
               else
                 ListView.builder(
-                  shrinkWrap: true, // ensures that the ListView doesn't expand infinitely within the Column
-                  physics: NeverScrollableScrollPhysics(), // ensures that the ListView doesn't interfere with the outer SingleChildScrollView
+                  shrinkWrap: true,
+                  // ensures that the ListView doesn't expand infinitely within the Column
+                  physics: NeverScrollableScrollPhysics(),
+                  // ensures that the ListView doesn't interfere with the outer SingleChildScrollView
                   itemCount: data.length,
                   itemBuilder: (BuildContext context, int index) {
                     return Column(
                       children: [
-                        ArticleContainer(
-                          title: data[index].name!,
-                          imagePath: 'images/dns_cloudflare.jpg',
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Column(
+                            children: [
+                              ClipRRect(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(20),
+                                      topRight: Radius.circular(20)),
+                                  child: Image.asset(
+                                    "images/dns_cloudflare.jpg",
+                                    fit: BoxFit.cover,
+                                    height: 200,
+                                    width: double.infinity,
+                                  )),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(20),
+                                      bottomRight: Radius.circular(20)),
+                                  color: Color(MyColors.backgroundAccent),
+                                ),
+                                height: 60,
+                                width: double.infinity,
+                                padding: EdgeInsets.all(20),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        data[index].name!,
+                                        style: TextStyles.articleTitle,
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (BuildContext context) {
+                                                  return Product_Edit(
+                                                      data[index].id,
+                                                      data[index].name,
+                                                      data[index].price,
+                                                      data[index].description);
+                                                })).then((value) {
+                                          refreshData();
+                                        });
+                                      },
+                                      child: Icon(
+                                        Icons.edit,
+                                        color: Color(MyColors.greenMain),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 8,
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        showAlert(
+                                            data[index].id, data[index].name);
+                                      },
+                                      child:
+                                          Icon(Icons.delete, color: Colors.red),
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                         SizedBox(
                           height: itemVerticalSpace,
@@ -158,6 +226,56 @@ class _HomeState extends State<Home> {
     );
   }
 
+  Future<void> deleteProduct(id) async {
+    var url = Uri.parse(
+        'https://digitallyunchained.rociochavezml.com/php/delete_product.php');
+    var response = await http.post(url, body: {
+      'id': id,
+    }).timeout(Duration(seconds: 90));
+
+    if (response.body != '0') {
+      MyFunctions.showAlert("Product deleted successfully", context);
+    } else {
+      MyFunctions.showAlert(
+          "There was an error, please report to the administrator", context);
+    }
+  }
+
+  showAlert(id, name) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('WARNING'),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text('Do you really want to delete this product: '),
+                  Text(name),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  deleteProduct(id).then((value) {
+                    refreshData();
+                  });
+                },
+                child: Text('Accept'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Cancel'),
+              ),
+            ],
+          );
+        });
+  }
 
   void refreshData() {
     data = [];

@@ -7,6 +7,8 @@ import 'package:digitally_unchained/collections/my_widgets.dart';
 import 'package:digitally_unchained/collections/text_styles.dart';
 import 'package:digitally_unchained/collections/my_functions.dart';
 import 'package:digitally_unchained/collections/validators.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -20,6 +22,8 @@ class _LoginState extends State<Login> {
   final passwordController = TextEditingController();
 
   bool shouldShowEmailValidationText = false;
+
+  var data;
 
   @override
   Widget build(BuildContext context) {
@@ -48,13 +52,10 @@ class _LoginState extends State<Login> {
                       style: TextStyles.screenTitle,
                     ),
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: DarkTextField(
-                      textController: emailController,
-                      label: 'Email address',
-                      onTextChanged: checkAndSetEmailValidation,
-                    ),
+                  DarkTextField(
+                    textController: emailController,
+                    label: 'Email address',
+                    onTextChanged: checkAndSetEmailValidation,
                   ),
                   SizedBox(
                       height: textFieldVerticalSpace / 4 * 1,
@@ -71,14 +72,10 @@ class _LoginState extends State<Login> {
                     height: textFieldVerticalSpace / 4 * 3,
                     width: double.infinity,
                   ),
-                  Container(
-                    // Password TextField
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: DarkTextField(
-                      label: 'Password',
-                      textController: passwordController,
-                      hasObscureText: true,
-                    ),
+                  DarkTextField(
+                    label: 'Password',
+                    textController: passwordController,
+                    hasObscureText: true,
                   ),
                   SizedBox(height: textFieldVerticalSpace),
                   Container(
@@ -88,7 +85,8 @@ class _LoginState extends State<Login> {
                     child: ElevatedButton(
                       onPressed: () {
                         FocusScope.of(context).unfocus();
-                        validateFields();
+                        login(emailController.text,
+                            passwordController.text);
                       },
                       child: Text(
                         'CONTINUE',
@@ -129,35 +127,6 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Future<void> validateFields() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    String? correctEmail = await prefs.getString('email');
-    String? correctPassword = await prefs.getString('password');
-
-    String email = emailController.text.trim();
-    String password = passwordController.text.trim();
-
-    print('Correct Email: "$correctEmail"');
-    print('Correct Password: "$correctPassword"');
-
-    if (email == '' || password == '') {
-      MyFunctions.showAlert(UserWarnings.emptyField, context);
-    } else if (email == correctEmail && password == correctPassword) {
-      Login();
-    } else {
-      MyFunctions.showAlert(UserWarnings.invalidPasswordEmail, context);
-    }
-  }
-
-  Future<void> Login() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    await prefs.setBool(PrefKey.isLoggedIn, true);
-
-    Navigator.pushReplacementNamed(context, '/home');
-  }
-
   @override
   void dispose() {
     emailController.dispose();
@@ -186,6 +155,45 @@ class _LoginState extends State<Login> {
     bool isValid = Validators.validateEmailFormat(email);
     setState(() {
       shouldShowEmailValidationText = !isValid;
+    });
+  }
+
+  Future<void> login(String email, String password) async {
+    var url =
+        Uri.parse('https://digitallyunchained.rociochavezml.com/php/login.php');
+    var response = await http.post(
+      url,
+      body: {
+        'email': email,
+        'password': password,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      data = jsonDecode(response.body);
+      await saveData();
+      resetTextControllers();
+      Navigator.pushReplacementNamed(context, '/home');
+    } else {
+      MyFunctions.showAlert('Invalid email or password', context);
+    }
+  }
+
+  Future<void> saveData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString(PrefKey.firstName, data['firstName']);
+    await prefs.setString(PrefKey.lastName, data['lastName']);
+    await prefs.setString(PrefKey.email, data['email']);
+    await prefs.setString(PrefKey.password, data['password']);
+    await prefs.setString(PrefKey.id, data['id']);
+    await prefs.setBool(PrefKey.isLoggedIn, true);
+  }
+
+  void resetTextControllers() {
+    setState(() {
+      emailController.text = '';
+      passwordController.text = '';
     });
   }
 }

@@ -32,10 +32,12 @@ class _RegisterState extends State<Register> {
   String password = '';
   String passwordConfirmation = '';
 
-  double textFieldVerticalSpace = 32;
+  double textFieldVerticalSpace = 12;
   double textFieldHorizontalPadding = 24;
 
   bool shouldShowEmailValidationText = false;
+
+  var data;
 
   @override
   Widget build(BuildContext context) {
@@ -83,35 +85,22 @@ class _RegisterState extends State<Register> {
                     height: 32,
                     width: double.infinity,
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: textFieldHorizontalPadding),
-                    child: DarkTextField(
-                        textController: firstNameController,
-                        label: 'First Name'),
-                  ),
+                  DarkTextField(
+                      textController: firstNameController, label: 'First Name'),
                   SizedBox(
                     height: textFieldVerticalSpace,
                     width: double.infinity,
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: textFieldHorizontalPadding),
-                    child: DarkTextField(
-                        textController: lastNameController, label: 'Last Name'),
-                  ),
+                  DarkTextField(
+                      textController: lastNameController, label: 'Last Name'),
                   SizedBox(
                     height: textFieldVerticalSpace,
                     width: double.infinity,
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: textFieldHorizontalPadding),
-                    child: DarkTextField(
-                        onTextChanged: checkAndSetEmailValidation,
-                        textController: emailController,
-                        label: 'Email Address'),
-                  ),
+                  DarkTextField(
+                      onTextChanged: checkAndSetEmailValidation,
+                      textController: emailController,
+                      label: 'Email Address'),
                   SizedBox(
                       height: textFieldVerticalSpace / 4 * 1,
                       width: double.infinity),
@@ -126,27 +115,19 @@ class _RegisterState extends State<Register> {
                     height: textFieldVerticalSpace / 4 * 3,
                     width: double.infinity,
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: textFieldHorizontalPadding),
-                    child: DarkTextField(
-                      textController: passwordController,
-                      label: 'Password',
-                      hasObscureText: true,
-                    ),
+                  DarkTextField(
+                    textController: passwordController,
+                    label: 'Password',
+                    hasObscureText: true,
                   ),
                   SizedBox(
                     height: textFieldVerticalSpace,
                     width: double.infinity,
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: textFieldHorizontalPadding),
-                    child: DarkTextField(
-                        textController: passwordConfirmationController,
-                        label: 'Confirm Password',
-                        hasObscureText: true),
-                  ),
+                  DarkTextField(
+                      textController: passwordConfirmationController,
+                      label: 'Confirm Password',
+                      hasObscureText: true),
                   SizedBox(
                     height: textFieldVerticalSpace,
                     width: double.infinity,
@@ -155,6 +136,7 @@ class _RegisterState extends State<Register> {
                     width: 1000,
                     height: 50,
                     padding: EdgeInsets.symmetric(horizontal: 20),
+                    margin: EdgeInsets.symmetric(vertical: 20),
                     child: ElevatedButton(
                       onPressed: () {
                         FocusScope.of(context).unfocus();
@@ -230,30 +212,24 @@ class _RegisterState extends State<Register> {
   }
 
   Future<void> sendData() async {
-    var url = Uri.parse('https://digitallyunchained.rociochavezml.com/php/register.php');
+    var url = Uri.parse(
+        'https://digitallyunchained.rociochavezml.com/php/register.php');
     var response = await http.post(url, body: {
-      'firstName' : firstName,
-      'lastName' : lastName,
-      'email' : email,
-      'password' : password,
+      'firstName': firstName,
+      'lastName': lastName,
+      'email': email,
+      'password': password,
     }).timeout(Duration(seconds: 90));
 
-    print(response.body);
+    data = jsonDecode(response.body);
 
-    var data = jsonDecode(response.body);
-
-    if(response.body != '0')
-    {
+    if (response.body != '0') {
+      await saveData();
       resetTextControllers();
       Navigator.pushReplacementNamed(context, '/home');
-      Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context){
-        return Home.withData(data['firstName'], data['lastName'], data['email']);
-      }));
-    }
-    
-    else
-    {
-      MyFunctions.showAlert("There was an error, please report to the administrator", context);
+    } else {
+      MyFunctions.showAlert(
+          "There was an error, please report to the administrator", context);
     }
   }
 
@@ -278,23 +254,14 @@ class _RegisterState extends State<Register> {
     return passwordController.text == passwordConfirmationController.text;
   }
 
-  Future<void> clearPreviousData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    await prefs.setString(PrefKey.firstName, firstNameController.text.trim());
-    await prefs.setString(PrefKey.lastName, lastNameController.text.trim());
-    await prefs.setString(PrefKey.email, emailController.text.trim());
-    await prefs.setString(PrefKey.password, passwordController.text.trim());
-    await prefs.setBool(PrefKey.isLoggedIn, true);
-  }
-
   Future<void> saveData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    await prefs.setString(PrefKey.firstName, firstNameController.text.trim());
-    await prefs.setString(PrefKey.lastName, lastNameController.text.trim());
-    await prefs.setString(PrefKey.email, emailController.text.trim());
-    await prefs.setString(PrefKey.password, passwordController.text.trim());
+    await prefs.setString(PrefKey.firstName, data['firstName']);
+    await prefs.setString(PrefKey.lastName, data['lastName']);
+    await prefs.setString(PrefKey.email, data['email']);
+    await prefs.setString(PrefKey.password, data['password']);
+    await prefs.setString(PrefKey.id, data['id']);
     await prefs.setBool(PrefKey.isLoggedIn, true);
   }
 }

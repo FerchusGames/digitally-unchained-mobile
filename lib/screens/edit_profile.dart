@@ -111,11 +111,9 @@ class _EditProfileState extends State<EditProfile> {
               height: labelVerticalSpace,
               width: double.infinity,
             ),
-            Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: DarkTextField(
-                  textController: firstNameController,
-                )),
+            DarkTextField(
+              textController: firstNameController,
+            ),
             SizedBox(
               height: textFieldVerticalSpace,
               width: double.infinity,
@@ -131,11 +129,9 @@ class _EditProfileState extends State<EditProfile> {
               height: labelVerticalSpace,
               width: double.infinity,
             ),
-            Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: DarkTextField(
-                  textController: lastNameController,
-                )),
+            DarkTextField(
+              textController: lastNameController,
+            ),
             SizedBox(
               height: textFieldVerticalSpace,
               width: double.infinity,
@@ -151,11 +147,9 @@ class _EditProfileState extends State<EditProfile> {
               height: labelVerticalSpace,
               width: double.infinity,
             ),
-            Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: DarkTextField(
-                  textController: emailController,
-                )),
+            DarkTextField(
+              textController: emailController,
+            ),
             SizedBox(
               height: textFieldVerticalSpace,
               width: double.infinity,

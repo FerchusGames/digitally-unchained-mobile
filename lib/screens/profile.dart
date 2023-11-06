@@ -121,13 +121,11 @@ class _ProfileState extends State<Profile> {
               height: labelVerticalSpace,
               width: double.infinity,
             ),
-            Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: DarkTextField(
-                  label: firstName,
-                  textController: TextEditingController(),
-                  isEnabled: false,
-                )),
+            DarkTextField(
+              label: firstName,
+              textController: TextEditingController(),
+              isEnabled: false,
+            ),
             SizedBox(
               height: textFieldVerticalSpace,
               width: double.infinity,
@@ -143,13 +141,11 @@ class _ProfileState extends State<Profile> {
               height: labelVerticalSpace,
               width: double.infinity,
             ),
-            Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: DarkTextField(
-                  label: lastName,
-                  textController: TextEditingController(),
-                  isEnabled: false,
-                )),
+            DarkTextField(
+              label: lastName,
+              textController: TextEditingController(),
+              isEnabled: false,
+            ),
             SizedBox(
               height: textFieldVerticalSpace,
               width: double.infinity,
@@ -165,13 +161,11 @@ class _ProfileState extends State<Profile> {
               height: labelVerticalSpace,
               width: double.infinity,
             ),
-            Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: DarkTextField(
-                  label: email,
-                  textController: TextEditingController(),
-                  isEnabled: false,
-                )),
+            DarkTextField(
+              label: email,
+              textController: TextEditingController(),
+              isEnabled: false,
+            ),
           ],
         ),
       ),
