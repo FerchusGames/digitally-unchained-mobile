@@ -11,6 +11,8 @@ import 'package:digitally_unchained/collections/text_styles.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:digitally_unchained/collections/global_data.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
@@ -20,13 +22,16 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
+  String firstName = '';
+  String lastName = '';
+  String email = '';
+
   File? image = null;
   final picker = ImagePicker();
 
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
   final emailController = TextEditingController();
-  final passwordController = TextEditingController();
 
   double textFieldVerticalSpace = 40;
   double labelVerticalSpace = 8;
@@ -161,7 +166,7 @@ class _EditProfileState extends State<EditProfile> {
               child: ElevatedButton(
                 onPressed: () async {
                   FocusScope.of(context).unfocus();
-                  await saveChanges();
+                  await sendData();
                   Navigator.of(context).pop();
                 },
                 child: Text(
@@ -180,14 +185,6 @@ class _EditProfileState extends State<EditProfile> {
   void initState() {
     super.initState();
     updateProfileFromPrefs();
-  }
-
-  Future<void> saveChanges() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    await prefs.setString(PrefKey.firstName, firstNameController.text);
-    await prefs.setString(PrefKey.lastName, lastNameController.text);
-    await prefs.setString(PrefKey.email, emailController.text);
   }
 
   Future<void> updateProfileFromPrefs() async {
@@ -326,5 +323,46 @@ class _EditProfileState extends State<EditProfile> {
         GlobalData.profilePicture = File(cropped.path);
       });
     }
+  }
+
+  void setTextVariables() {
+    firstName = firstNameController.text.trim();
+    lastName = lastNameController.text.trim();
+    email = emailController.text.trim();
+  }
+
+  Future<void> sendData() async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    setTextVariables();
+
+    var url = Uri.parse('https://digitallyunchained.rociochavezml.com/php/edit_user.php');
+    var response = await http.post(url, body: {
+      'id' : prefs.getString(PrefKey.id),
+      'firstName' : firstName,
+      'lastName' : lastName,
+      'email' : email,
+    }).timeout(Duration(seconds: 90));
+
+    if(response.body == '1')
+    {
+      await updatePrefs();
+      Navigator.pop(context);
+    }
+
+    else
+    {
+      MyFunctions.showAlert("There was an error, please report to the administrator", context);
+    }
+  }
+
+  Future<void> updatePrefs() async
+  {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString(PrefKey.firstName, firstName);
+    await prefs.setString(PrefKey.lastName, lastName);
+    await prefs.setString(PrefKey.email, email);
   }
 }
