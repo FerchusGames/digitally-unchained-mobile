@@ -13,6 +13,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:digitally_unchained/collections/global_data.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
@@ -35,6 +36,8 @@ class _EditProfileState extends State<EditProfile> {
 
   double textFieldVerticalSpace = 40;
   double labelVerticalSpace = 8;
+
+  Dio dio = new Dio();
 
   @override
   Widget build(BuildContext context) {
@@ -87,15 +90,15 @@ class _EditProfileState extends State<EditProfile> {
                           width: 160,
                           child: GlobalData.profilePicture != null
                               ? Image.file(
-                            GlobalData.profilePicture!,
-                            fit: BoxFit.cover,
-                          )
+                                  GlobalData.profilePicture!,
+                                  fit: BoxFit.cover,
+                                )
                               : Image.asset(
-                            'images/default_avatar.jpg',
-                            fit: BoxFit.cover,
-                          ),
-                          ),
+                                  'images/default_avatar.jpg',
+                                  fit: BoxFit.cover,
+                                ),
                         ),
+                      ),
                     ],
                   ),
                 ),
@@ -332,37 +335,62 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Future<void> sendData() async {
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     setTextVariables();
 
-    var url = Uri.parse('https://digitallyunchained.rociochavezml.com/php/edit_user.php');
+    var url = Uri.parse(
+        'https://digitallyunchained.rociochavezml.com/php/edit_user.php');
     var response = await http.post(url, body: {
-      'id' : prefs.getString(PrefKey.id),
-      'firstName' : firstName,
-      'lastName' : lastName,
-      'email' : email,
+      'id': prefs.getString(PrefKey.id),
+      'firstName': firstName,
+      'lastName': lastName,
+      'email': email,
     }).timeout(Duration(seconds: 90));
 
-    if(response.body == '1')
-    {
+    if (response.body == '1') {
+      await uploadImage();
       await updatePrefs();
       Navigator.pop(context);
-    }
-
-    else
-    {
-      MyFunctions.showAlert("There was an error, please report to the administrator", context);
+    } else {
+      MyFunctions.showAlert(
+          "There was an error, please report to the administrator", context);
     }
   }
 
-  Future<void> updatePrefs() async
-  {
+  Future<void> updatePrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     await prefs.setString(PrefKey.firstName, firstName);
     await prefs.setString(PrefKey.lastName, lastName);
     await prefs.setString(PrefKey.email, email);
+  }
+
+  Future<void> uploadImage() async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    try {
+      String filename = image!.path.split('/').last;
+      FormData formData = new FormData.fromMap({
+        'id' : prefs.getString(PrefKey.id),
+        'email' : prefs.getString(PrefKey.email),
+        'file': await MultipartFile.fromFile(image!.path, filename: filename)
+      });
+
+      await dio.post('https://digitallyunchained.rociochavezml.com/php/upload_image.php',
+      data: formData).then((value){
+        if(value.toString() == '1')
+          {
+            print('Image uploaded successfully');
+          }
+        else
+          {
+            print(value.toString());
+          }
+      });
+    } catch (e) {
+      print(e.toString());
+    }
   }
 }
