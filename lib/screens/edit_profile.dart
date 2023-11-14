@@ -88,15 +88,26 @@ class _EditProfileState extends State<EditProfile> {
                         child: Container(
                           height: 160,
                           width: 160,
-                          child: GlobalData.profilePicture != null
-                              ? Image.file(
-                                  GlobalData.profilePicture!,
-                                  fit: BoxFit.cover,
-                                )
-                              : Image.asset(
-                                  'images/default_avatar.jpg',
-                                  fit: BoxFit.cover,
-                                ),
+                          child: image == null
+                              ? FutureBuilder<String>(
+                            future: MyFunctions.getProfilePicture(),
+                            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                // Show a loading indicator while waiting for the future to complete
+                                return Center(child: CircularProgressIndicator());
+                              } else if (snapshot.hasError) {
+                                // Handle any errors that might have occurred
+                                return Center(child: Text('Error: ${snapshot.error}'));
+                              } else if (snapshot.hasData) {
+                                // Once the future completes, use the data to display the image
+                                return Image.network(snapshot.data!, fit: BoxFit.cover);
+                              } else {
+                                // Handle the case where snapshot has no data
+                                return Center(child: Text('No image available'));
+                              }
+                            },
+                          )
+                          : Image.file(image!, fit: BoxFit.cover,)
                         ),
                       ),
                     ],
@@ -323,7 +334,6 @@ class _EditProfileState extends State<EditProfile> {
     if (cropped != null) {
       setState(() {
         image = File(cropped.path);
-        GlobalData.profilePicture = File(cropped.path);
       });
     }
   }
@@ -367,27 +377,25 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Future<void> uploadImage() async {
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     try {
       String filename = image!.path.split('/').last;
       FormData formData = new FormData.fromMap({
-        'id' : prefs.getString(PrefKey.id),
-        'email' : prefs.getString(PrefKey.email),
+        'id': prefs.getString(PrefKey.id),
         'file': await MultipartFile.fromFile(image!.path, filename: filename)
       });
 
-      await dio.post('https://digitallyunchained.rociochavezml.com/php/upload_image.php',
-      data: formData).then((value){
-        if(value.toString() == '1')
-          {
-            print('Image uploaded successfully');
-          }
-        else
-          {
-            print(value.toString());
-          }
+      await dio
+          .post(
+              'https://digitallyunchained.rociochavezml.com/php/upload_profile_picture.php',
+              data: formData)
+          .then((value) {
+        if (value.toString() == '1') {
+          print('Image uploaded successfully');
+        } else {
+          print(value.toString());
+        }
       });
     } catch (e) {
       print(e.toString());
