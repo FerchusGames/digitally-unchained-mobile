@@ -1,3 +1,4 @@
+import 'package:digitally_unchained/screens/tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:digitally_unchained/collections/screens.dart';
 

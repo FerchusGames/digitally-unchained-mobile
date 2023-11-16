@@ -163,7 +163,7 @@ class _HomeState extends State<Home> {
                                   child: Image.asset(
                                     "images/dns_cloudflare.jpg",
                                     fit: BoxFit.cover,
-                                    height: 200,
+                                    //height: 200,
                                     width: double.infinity,
                                   )),
                               Container(
