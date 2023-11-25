@@ -32,12 +32,34 @@ class _RecoverPasswordState extends State<RecoverPassword> {
         body: SafeArea(
           child: ListView(
             children: [
+              SizedBox(
+                height: 20,
+                width: double.infinity,
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                alignment: Alignment.centerLeft,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Icon(
+                    Icons.arrow_back,
+                    color: Color(MyColors.darkIconBackground),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+                width: double.infinity,
+              ),
               Column(
                 children: [
                   Container(
                       margin: EdgeInsets.all(20),
-                      height: 160,
+                      height: 80,
                       child: Image.asset('images/du_logo_dark.png')),
+                  SizedBox(height: 40,),
                   Container(
                     padding: EdgeInsets.only(left: 20, right: 20, bottom: 24),
                     alignment: Alignment.centerLeft,
