@@ -100,7 +100,7 @@ class _Product_EditState extends State<Product_Edit> {
                   showOptions();
                 },
                 child: Text(
-                  'Change Image',
+                  'CHANGE IMAGE',
                   style: TextStyles.buttonText,
                 ),
               ),

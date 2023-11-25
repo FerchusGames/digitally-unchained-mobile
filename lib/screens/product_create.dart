@@ -24,8 +24,9 @@ class _Product_CreateState extends State<Product_Create> {
   String name = '';
   String price = '';
   String description = '';
+  String id = '';
 
-  File? image = null;
+  File? tmpImage = null;
   final picker = ImagePicker();
 
   Dio dio = new Dio();
@@ -56,6 +57,25 @@ class _Product_CreateState extends State<Product_Create> {
         ),
         body: ListView(
           children: [
+            SizedBox(height: 20,),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20)),
+                  child: tmpImage == null
+                      ? Image.network('https://www.digitallyunchained.rociochavezml.com/assets/images/products/default_product.jpg', fit: BoxFit.cover,)
+                      : Image.file(tmpImage!, fit: BoxFit.cover,)),
+            ),
+            Container(
+              padding: EdgeInsets.all(20),
+              child: ElevatedButton(
+                  onPressed: () {
+                    showOptions();
+                  },
+                  child: Text('UPLOAD IMAGE')),
+            ),
             DarkTextField(
               textController: nameTextController,
               label: "Name",
@@ -68,24 +88,6 @@ class _Product_CreateState extends State<Product_Create> {
             DarkTextField(
                 textController: descriptionTextController,
                 label: "Description"),
-            Container(
-              padding: EdgeInsets.all(20),
-              child: ElevatedButton(
-                  onPressed: () {
-                    showOptions();
-                  },
-                  child: Text('UPLOAD IMAGE')),
-            ),
-            Container(
-              padding: EdgeInsets.all(20),
-              child: image == null
-                  ? Center(
-                      child: Text(
-                      'No Image Uploaded',
-                      style: TextStyle(color: Colors.white),
-                    ))
-                  : Image.file(image!),
-            ),
           ],
         ),
       ),
@@ -108,6 +110,7 @@ class _Product_CreateState extends State<Product_Create> {
     }).timeout(Duration(seconds: 90));
 
     if (response.body != '0') {
+      id = response.body;
       await uploadImage();
       resetTextControllers();
       Navigator.pop(context);
@@ -240,27 +243,29 @@ class _Product_CreateState extends State<Product_Create> {
   void crop(File file) async {
     final cropped = await ImageCropper().cropImage(
       sourcePath: file.path,
-      aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+      aspectRatio: CropAspectRatio(ratioX: 16, ratioY: 9),
     );
 
     if (cropped != null) {
       setState(() {
-        image = File(cropped.path);
+        tmpImage = File(cropped.path);
       });
     }
   }
 
   Future<void> uploadImage() async {
+
     try {
-      String filename = image!.path.split('/').last;
+      String filename = tmpImage!.path.split('/').last;
       FormData formData = new FormData.fromMap({
-        'file': await MultipartFile.fromFile(image!.path, filename: filename)
+        'id': id,
+        'file': await MultipartFile.fromFile(tmpImage!.path, filename: filename)
       });
 
       await dio
           .post(
-              'https://digitallyunchained.rociochavezml.com/php/upload_profile_picture.php',
-              data: formData)
+          'https://digitallyunchained.rociochavezml.com/php/upload_product_image.php',
+          data: formData)
           .then((value) {
         if (value.toString() == '1') {
           print('Image uploaded successfully');
