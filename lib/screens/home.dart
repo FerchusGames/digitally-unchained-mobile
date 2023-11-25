@@ -160,8 +160,8 @@ class _HomeState extends State<Home> {
                                   borderRadius: BorderRadius.only(
                                       topLeft: Radius.circular(20),
                                       topRight: Radius.circular(20)),
-                                  child: Image.asset(
-                                    "images/dns_cloudflare.jpg",
+                                  child: Image.network(
+                                    data[index].image!,
                                     fit: BoxFit.cover,
                                     //height: 200,
                                     width: double.infinity,
@@ -193,7 +193,8 @@ class _HomeState extends State<Home> {
                                                       data[index].id,
                                                       data[index].name,
                                                       data[index].price,
-                                                      data[index].description);
+                                                      data[index].description,
+                                                      data[index].image);
                                                 })).then((value) {
                                           refreshData();
                                         });

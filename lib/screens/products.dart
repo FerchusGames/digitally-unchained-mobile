@@ -18,6 +18,93 @@ class Products extends StatefulWidget {
 class _ProductsState extends State<Products> {
   List<Product_Data> data = [];
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    refreshData();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        backgroundColor: Color(MyColors.backgroundMain),
+        appBar: AppBar(
+          title: Text('Products'),
+          backgroundColor: Color(MyColors.backgroundMain),
+          titleTextStyle: TextStyles.screenTitle,
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.pushNamed(context, "/product_create").then((value) {
+              refreshData();
+            });
+          },
+          child: Icon(Icons.add),
+          backgroundColor: Colors.green,
+          elevation: 0,
+        ),
+        body: Column(
+          children: [
+            data.isEmpty
+                ? Center(
+              child: Text('No products'),
+            )
+                : Expanded(
+              child: ListView.builder(
+                itemCount: data.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                      padding: EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                                  color: Color(MyColors.backgroundAccent),
+                                  width: 1))),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              data[index].name!,
+                              style: TextStyles.textButton,
+                            ),
+                          ),
+                          GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) {
+                                          return Product_Edit(
+                                              data[index].id,
+                                              data[index].name,
+                                              data[index].price,
+                                              data[index].description,
+                                              data[index].image);
+                                        })).then((value) {
+                                  refreshData();
+                                });
+                              },
+                              child:
+                              Icon(Icons.edit, color: Colors.green)),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          GestureDetector(
+                              onTap: () {
+                                showAlert(
+                                    data[index].id, data[index].name);
+                              },
+                              child:
+                              Icon(Icons.delete, color: Colors.red)),
+                        ],
+                      ));
+                },
+              ),
+            )
+          ],
+        ));
+  }
+
   Future<List<Product_Data>> take_data() async {
     var url = Uri.parse(
         'https://digitallyunchained.rociochavezml.com/php/show_product.php');
@@ -73,13 +160,6 @@ class _ProductsState extends State<Products> {
         });
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    refreshData();
-  }
-
   void refreshData() {
     data = [];
     take_data().then((value) {
@@ -88,85 +168,6 @@ class _ProductsState extends State<Products> {
         print(data);
       });
     });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Color(MyColors.backgroundMain),
-        appBar: AppBar(
-          title: Text('Products'),
-          backgroundColor: Color(MyColors.backgroundMain),
-          titleTextStyle: TextStyles.screenTitle,
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.pushNamed(context, "/product_create").then((value) {
-              refreshData();
-            });
-          },
-          child: Icon(Icons.add),
-          backgroundColor: Colors.green,
-          elevation: 0,
-        ),
-        body: Column(
-          children: [
-            data.isEmpty
-                ? Center(
-                    child: Text('No products'),
-                  )
-                : Expanded(
-                    child: ListView.builder(
-                      itemCount: data.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Container(
-                            padding: EdgeInsets.all(15),
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    bottom: BorderSide(
-                                        color: Color(MyColors.backgroundAccent),
-                                        width: 1))),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    data[index].name!,
-                                    style: TextStyles.textButton,
-                                  ),
-                                ),
-                                GestureDetector(
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) {
-                                        return Product_Edit(
-                                            data[index].id,
-                                            data[index].name,
-                                            data[index].price,
-                                            data[index].description);
-                                      })).then((value) {
-                                        refreshData();
-                                      });
-                                    },
-                                    child:
-                                        Icon(Icons.edit, color: Colors.green)),
-                                SizedBox(
-                                  width: 8,
-                                ),
-                                GestureDetector(
-                                    onTap: () {
-                                      showAlert(
-                                          data[index].id, data[index].name);
-                                    },
-                                    child:
-                                        Icon(Icons.delete, color: Colors.red)),
-                              ],
-                            ));
-                      },
-                    ),
-                  )
-          ],
-        ));
   }
 
   Future<void> deleteProduct(id) async {

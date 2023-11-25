@@ -11,8 +11,9 @@ class Product_Edit extends StatefulWidget {
   String? name = '';
   String? price = '';
   String? description = '';
+  String? image = '';
 
-  Product_Edit(this.id, this.name, this.price, this.description) : super();
+  Product_Edit(this.id, this.name, this.price, this.description, this.image) : super();
 
   @override
   State<Product_Edit> createState() => _Product_EditState();
