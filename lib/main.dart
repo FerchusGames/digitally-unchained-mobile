@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
         '/edit_profile': (context) => EditProfile(),
         '/products': (context) => Products(),
         '/product_create': (context) => Product_Create(),
+        '/recover_password': (context) => RecoverPassword(),
       },
       title: 'Digitally Unchained',
       theme: ThemeData(

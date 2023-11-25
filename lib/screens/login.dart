@@ -42,7 +42,7 @@ class _LoginState extends State<Login> {
                 children: [
                   Container(
                       margin: EdgeInsets.all(20),
-                      height: 220,
+                      height: 160,
                       child: Image.asset('images/du_logo_dark.png')),
                   Container(
                     padding: EdgeInsets.only(left: 20, right: 20, bottom: 24),
@@ -95,7 +95,7 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                   SizedBox(
-                      height: textFieldVerticalSpace, width: double.infinity),
+                      height: textFieldVerticalSpace * 1.5, width: double.infinity),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     alignment: Alignment.centerLeft,
@@ -114,6 +114,30 @@ class _LoginState extends State<Login> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         'SIGN UP',
+                        style: TextStyles.textButton,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                      height: textFieldVerticalSpace * 1.5, width: double.infinity),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Forgot Your Password?",
+                      style: TextStyles.suggestion,
+                    ),
+                  ),
+                  SizedBox(height: 12, width: double.infinity),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushNamed('/recover_password');
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'RECOVER PASSWORD',
                         style: TextStyles.textButton,
                       ),
                     ),

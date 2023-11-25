@@ -8,3 +8,4 @@ export 'package:digitally_unchained/screens/product_create.dart';
 export 'package:digitally_unchained/screens/product_edit.dart';
 export 'package:digitally_unchained/screens/animals.dart';
 export 'package:digitally_unchained/screens/objects.dart';
+export 'package:digitally_unchained/screens/recover_password.dart';

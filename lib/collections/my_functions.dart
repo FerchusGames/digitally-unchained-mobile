@@ -31,6 +31,32 @@ class MyFunctions {
         });
   }
 
+  static void showMessage(message, context) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Message'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: [
+                  Text(message),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Accept'),
+              ),
+            ],
+          );
+        });
+  }
+
   static void unfocusWidgets(context) {
     final FocusScopeNode focus = FocusScope.of(context);
     if (!focus.hasPrimaryFocus && focus.hasFocus) {
@@ -45,15 +71,17 @@ class MyFunctions {
     await prefs.setString(PrefKey.lastName, "");
     await prefs.setString(PrefKey.email, "");
     await prefs.setString(PrefKey.password, "");
-    Navigator.of(context).pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
+    Navigator.of(context)
+        .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
   }
 
   static Future<String> getProfilePicture() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    var url = Uri.parse('https://digitallyunchained.rociochavezml.com/php/show_profile_picture.php');
+    var url = Uri.parse(
+        'https://digitallyunchained.rociochavezml.com/php/show_profile_picture.php');
     var response = await http.post(url, body: {
-      'id' : await prefs.getString(PrefKey.id),
+      'id': await prefs.getString(PrefKey.id),
     }).timeout(Duration(seconds: 90));
 
     return response.body;
