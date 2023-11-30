@@ -150,82 +150,98 @@ class _HomeState extends State<Home> {
                   // ensures that the ListView doesn't interfere with the outer SingleChildScrollView
                   itemCount: data.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return Column(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 20),
-                          child: Column(
-                            children: [
-                              ClipRRect(
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(20),
-                                      topRight: Radius.circular(20)),
-                                  child: Image.network(
-                                    data[index].image!,
-                                    fit: BoxFit.cover,
-                                    //height: 200,
-                                    width: double.infinity,
-                                  )),
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(20),
-                                      bottomRight: Radius.circular(20)),
-                                  color: Color(MyColors.backgroundAccent),
-                                ),
-                                height: 60,
-                                width: double.infinity,
-                                padding: EdgeInsets.all(20),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        data[index].name!,
-                                        style: TextStyles.articleTitle,
+                    return GestureDetector(
+                      onTap: (){
+                        Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (BuildContext context) {
+                                  return ProductInfo(
+                                      data[index].image,
+                                      data[index].name,
+                                      data[index].price,
+                                      data[index].description,
+                                      );
+                                })).then((value) {
+                          refreshData();
+                        });
+                      },
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Column(
+                              children: [
+                                ClipRRect(
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(20),
+                                        topRight: Radius.circular(20)),
+                                    child: Image.network(
+                                      data[index].image!,
+                                      fit: BoxFit.cover,
+                                      //height: 200,
+                                      width: double.infinity,
+                                    )),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(20),
+                                        bottomRight: Radius.circular(20)),
+                                    color: Color(MyColors.backgroundAccent),
+                                  ),
+                                  height: 60,
+                                  width: double.infinity,
+                                  padding: EdgeInsets.all(20),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          data[index].name!,
+                                          style: TextStyles.articleTitle,
+                                        ),
                                       ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                                builder: (BuildContext context) {
-                                                  return Product_Edit(
-                                                      data[index].id,
-                                                      data[index].name,
-                                                      data[index].price,
-                                                      data[index].description,
-                                                      data[index].image);
-                                                })).then((value) {
-                                          refreshData();
-                                        });
-                                      },
-                                      child: Icon(
-                                        Icons.edit,
-                                        color: Color(MyColors.greenMain),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (BuildContext context) {
+                                                    return Product_Edit(
+                                                        data[index].id,
+                                                        data[index].name,
+                                                        data[index].price,
+                                                        data[index].description,
+                                                        data[index].image);
+                                                  })).then((value) {
+                                            refreshData();
+                                          });
+                                        },
+                                        child: Icon(
+                                          Icons.edit,
+                                          color: Color(MyColors.greenMain),
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      width: 8,
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        showAlert(
-                                            data[index].id, data[index].name);
-                                      },
-                                      child:
-                                          Icon(Icons.delete, color: Colors.red),
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
+                                      SizedBox(
+                                        width: 8,
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          showAlert(
+                                              data[index].id, data[index].name);
+                                        },
+                                        child:
+                                            Icon(Icons.delete, color: Colors.red),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: itemVerticalSpace,
-                          width: double.infinity,
-                        ),
-                      ],
+                          SizedBox(
+                            height: itemVerticalSpace,
+                            width: double.infinity,
+                          ),
+                        ],
+                      ),
                     );
                   },
                 ),

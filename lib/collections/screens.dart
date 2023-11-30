@@ -5,6 +5,7 @@ export 'package:digitally_unchained/screens/profile.dart';
 export 'package:digitally_unchained/screens/edit_profile.dart';
 export 'package:digitally_unchained/screens/products.dart';
 export 'package:digitally_unchained/screens/product_create.dart';
+export 'package:digitally_unchained/screens/product_info.dart';
 export 'package:digitally_unchained/screens/product_edit.dart';
 export 'package:digitally_unchained/screens/animals.dart';
 export 'package:digitally_unchained/screens/objects.dart';
